@@ -72,6 +72,8 @@ public class PSFj {
 
             options.addOption("2c", "dual-channel", false, "compare two channels");
 
+            options.addOption("b", "batch", true, "batch processing from directory");
+
             CommandLineParser parser = new GnuParser();
             CommandLine cmd = null;
             try {
@@ -107,11 +109,10 @@ public class PSFj {
             String calibrationFile = cmd.getOptionValue("c");
 
             System.out.println(calibrationFile);
-            if (filename == null || new File(filename).exists() == false) {
+            if (cmd.hasOption("b") ||filename == null || new File(filename).exists() == false) {
                 System.err.println("Error : Input file missing");
-                System.exit(1);
+               // System.exit(1);
             }
-
 
             /*
              * Image Processing
@@ -121,15 +122,39 @@ public class PSFj {
 
             try {
 
-                image = new BeadImage(filename);
+                if (cmd.hasOption("b")) {
+                    System.out.println("Batch processing");
+                    
+                    String batchdirectory = cmd.getOptionValue("b");
+                    
+                    File bdir = new File(batchdirectory);
+                    
+                    for (File f : bdir.listFiles()){
+                        if (f.getName().contains("tif")){
+                            image = new BeadImage(f.getPath());
 
-                if (calibrationFile != null) {
-                    image.setMicroscope(new Microscope(new IniFile(calibrationFile)));
+                    if (calibrationFile != null) {
+                        image.setMicroscope(new Microscope(new IniFile(calibrationFile)));
+                    }
+
+                    image.workFromMemory();
+                    image.autoFocus();
+                    manager.add(image);
+                        }
+                    }
+
+                } else {
+
+                    image = new BeadImage(filename);
+
+                    if (calibrationFile != null) {
+                        image.setMicroscope(new Microscope(new IniFile(calibrationFile)));
+                    }
+
+                    image.workFromMemory();
+                    image.autoFocus();
+                    manager.add(image);
                 }
-
-                image.workFromMemory();
-                image.autoFocus();
-                manager.add(image);
 
                 if (cmd.hasOption('w')) {
 
