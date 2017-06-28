@@ -360,7 +360,7 @@ public class BeadImageManager extends Observable implements Observer {
 			}
 
 			// checking the bit size
-			if (bitsPerPixel > 16) {
+			if (bitsPerPixel > 32) {
 				isValid = false;
 				if (reason == null)
 					reason = "Only 8-bits and 16-bits tif images are supported.";

@@ -622,7 +622,7 @@ public class BeadImage extends Observable {
             return;
         }
 
-        if (bitsPerPixel > 16) {
+        if (bitsPerPixel > 32) {
             isValid = false;
             setInvalidityReason("Only 8-bits and 16-bits tif images are supported.");
             setProgress(0, MSG_IMAGE_OKAY);
@@ -2332,8 +2332,7 @@ public class BeadImage extends Observable {
                 * getImageHeight() / beadNumber * 8));
 
         // int w = getImageWidth() / factor;
-        int h = w; // getImageHeight() / factor;
-
+        int h = w; // getImageHeight() / factor
         int x0 = x;
         int y0 = y;
 
